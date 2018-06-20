@@ -12,5 +12,19 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    // C1
+   //return view('cats/show')->with('number', 10);
+
+    // C2
+    $number = 10;
+    //return view('cats/show', compact('number'));
+
+    // C3
+    //return view('cats/show', array('number'=> 10));
+
+    return redirect('cats');
+});
+
+Route::get('/', function () {
+    return view('cats/index')->with('cats', '<h1>title</h1>');
 });
