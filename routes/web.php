@@ -27,13 +27,6 @@ Route::get('/', function () {
     return redirect('cats');
 });
 
-// List cats
-Route::get('/cats', function () {
-    $cats = Furbook\Cat::all();
-    //dd($cats[0]->breed);
-    return view('cats/index')->with('cats', $cats);
-});
-
 // Display list cats of breed name
 Route::get('/cats/breeds/{name}', function ($name) {
     $breed = Furbook\Breed::with('cats')
@@ -45,50 +38,4 @@ Route::get('/cats/breeds/{name}', function ($name) {
         ->with('cats', $breed->cats);
 });
 
-// Display info cat
-Route::get('/cats/{id}', function (Furbook\Cat $id) {
-    //dd(DB::getQueryLog());
-    $cat = Furbook\Cat::find($id)->first();
-    return view('cats.show')->with('cat', $cat);
-})->where('id', '[0-9]+');
-
-// Create cat
-Route::get('/cats/create', function () {
-    return view('cats.create');
-});
-
-Route::post('/cats', function () {
-    //dd(Request::all());
-    $cat = Furbook\Cat::create(Input::all());
-    return redirect('cats/' . $cat->id)->with('cat', $cat)
-        ->withSuccess('Create cat success');
-});
-
-// Update cat
-Route::get('/cats/{id}/edit', function ($id) {
-    $cat = Furbook\Cat::find($id);
-    return view('cats.edit')->with('cat', $cat);
-});
-
-Route::put('/cats/{id}', function ($id) {
-    $cat = Furbook\Cat::find($id);
-    $cat->update(Input::all());
-    return redirect('cats/'. $cat->id)
-        ->withSuccess('Update cat success');
-});
-
-// Delete cat
-Route::get('/cats/{id}/delete', function ($id) {
-    $cat = Furbook\Cat::find($id);
-    $cat->delete();
-    return redirect('cats')
-        ->withSuccess('Delete cat success');
-});
-
-Route::delete('/cats', function () {
-    $id = Input::post('id');
-    $cat = Furbook\Cat::find($id);
-    $cat->delete();
-    return redirect('cats')
-        ->withSuccess('Delete cat success');
-});
+Route::resource('cat', 'CatController');
