@@ -11,6 +11,7 @@
 |
 */
 use Illuminate\Support\Facades\Input;
+DB::enableQueryLog();
 
 Route::get('/', function () {
     // C1
@@ -43,12 +44,11 @@ Route::get('/cats/breeds/{name}', function ($name) {
         ->with('breed', $breed)
         ->with('cats', $breed->cats);
 });
-DB::enableQueryLog();
+
 // Display info cat
 Route::get('/cats/{id}', function (Furbook\Cat $id) {
-
     //dd(DB::getQueryLog());
-    $cat = Furbook\Cat::find($id);
+    $cat = Furbook\Cat::find($id)->first();
     return view('cats.show')->with('cat', $cat);
 })->where('id', '[0-9]+');
 
@@ -71,9 +71,7 @@ Route::get('/cats/{id}/edit', function ($id) {
 });
 
 Route::put('/cats/{id}', function ($id) {
-    //dd(Input::all());
-    $cat = Furbook\Cat::find($id)
-        ->first();
+    $cat = Furbook\Cat::find($id);
     $cat->update(Input::all());
     return redirect('cats/'. $cat->id)
         ->withSuccess('Update cat success');
@@ -81,7 +79,7 @@ Route::put('/cats/{id}', function ($id) {
 
 // Delete cat
 Route::get('/cats/{id}/delete', function ($id) {
-    $cat = Furbook\Cat::find($id)->first();
+    $cat = Furbook\Cat::find($id);
     $cat->delete();
     return redirect('cats')
         ->withSuccess('Delete cat success');
@@ -89,7 +87,7 @@ Route::get('/cats/{id}/delete', function ($id) {
 
 Route::delete('/cats', function () {
     $id = Input::post('id');
-    $cat = Furbook\Cat::find($id)->first();
+    $cat = Furbook\Cat::find($id);
     $cat->delete();
     return redirect('cats')
         ->withSuccess('Delete cat success');
