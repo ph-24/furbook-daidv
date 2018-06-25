@@ -10,6 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+use Illuminate\Support\Facades\Input;
 
 Route::get('/', function () {
     // C1
@@ -27,14 +28,29 @@ Route::get('/', function () {
 
 // List cats
 Route::get('/cats', function () {
-    //return view('cats/index')->with('cats', '<h1>title</h1>');
-    echo 'List cats';
+    $cats = Furbook\Cat::all();
+    //dd($cats[0]->breed);
+    return view('cats/index')->with('cats', $cats);
 });
 
 // Display list cats of breed name
 Route::get('/cats/breeds/{name}', function ($name) {
-    echo $name;
+    $breed = Furbook\Breed::with('cats')
+        ->where('name', $name)
+        ->first();
+    //dd($breed->cats);
+    return view('cats.index')
+        ->with('breed', $breed)
+        ->with('cats', $breed->cats);
 });
+DB::enableQueryLog();
+// Display info cat
+Route::get('/cats/{id}', function (Furbook\Cat $id) {
+
+    //dd(DB::getQueryLog());
+    $cat = Furbook\Cat::find($id);
+    return view('cats.show')->with('cat', $cat);
+})->where('id', '[0-9]+');
 
 // Create cat
 Route::get('/cats/create', function () {
@@ -42,28 +58,39 @@ Route::get('/cats/create', function () {
 });
 
 Route::post('/cats', function () {
-    echo 'Dữ liệu tạo mới đã được gửi lên';
-});
-
-// Display info cat
-Route::get('/cats/{id}', function ($id) {
-    echo sprintf('Cat #' . $id);
+    //dd(Request::all());
+    $cat = Furbook\Cat::create(Input::all());
+    return redirect('cats/' . $cat->id)->with('cat', $cat)
+        ->withSuccess('Create cat success');
 });
 
 // Update cat
 Route::get('/cats/{id}/edit', function ($id) {
-    echo sprintf('Edit Cat #' . $id);
+    $cat = Furbook\Cat::find($id);
+    return view('cats.edit')->with('cat', $cat);
 });
 
-Route::put('/cats/{id}', function () {
-    echo 'Dữ liệu update đã được gửi lên';
+Route::put('/cats/{id}', function ($id) {
+    //dd(Input::all());
+    $cat = Furbook\Cat::find($id)
+        ->first();
+    $cat->update(Input::all());
+    return redirect('cats/'. $cat->id)
+        ->withSuccess('Update cat success');
 });
 
 // Delete cat
 Route::get('/cats/{id}/delete', function ($id) {
-    echo sprintf('delete Cat #' . $id);
+    $cat = Furbook\Cat::find($id)->first();
+    $cat->delete();
+    return redirect('cats')
+        ->withSuccess('Delete cat success');
 });
 
-Route::delete('/cats/{id}', function ($id) {
-    echo sprintf('delete Cat #' . $id);
+Route::delete('/cats', function () {
+    $id = Input::post('id');
+    $cat = Furbook\Cat::find($id)->first();
+    $cat->delete();
+    return redirect('cats')
+        ->withSuccess('Delete cat success');
 });
