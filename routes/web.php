@@ -24,7 +24,7 @@ Route::get('/', function () {
     // C3
     //return view('cats/show', array('number'=> 10));
 
-    return redirect('cats');
+    return redirect()->route('cat.index');
 });
 
 // Display list cats of breed name

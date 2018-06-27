@@ -4,6 +4,7 @@ namespace Furbook\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Furbook\Cat;
+use Validator;
 
 class CatController extends Controller
 {
@@ -31,22 +32,53 @@ class CatController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
+        //dd($request->all());
+        // Define rule validate
+//        $validator = $request->validate(
+//
+//        );
+
+        $validator = Validator::make($request->all(),
+            [
+                'name' => 'required|max:255',
+                'date_of_birth' => 'required|date_format:"Y/m/d"',
+                'breed_id' => 'required|numeric',
+            ],
+            [
+                'required' => 'Cột :attribute là bắt buộc.',
+                'max' => 'Cột :attribute độ dài phải nhỏ hơn :size.',
+                'date_format' => 'Cột :attribute định dạng phải là "Y/m/d".',
+                'numeric' => 'Cột :attribute phải là kiểu số.',
+            ]
+        );
+
+        // If data invalid
+        if ($validator->fails()) {
+            return redirect()
+                ->route('cat.create')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Insert cat
         $cat = Cat::create($request->all());
+
+        // Redirect back show cat
         return redirect()
             ->route('cat.show', $cat->id)
             ->with('cat', $cat)
-        ->withSuccess('Create cat success');
+            ->withSuccess('Create cat success');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show(Cat $cat)
@@ -57,7 +89,7 @@ class CatController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit(Cat $cat)
@@ -68,8 +100,8 @@ class CatController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Cat $cat)
@@ -83,7 +115,7 @@ class CatController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(Cat $cat)

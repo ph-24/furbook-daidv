@@ -7,7 +7,7 @@
 <div class="form-group">
 {!! Form::label('date_of_birth', 'Date of Birth') !!}
 <div class="form-controls">
-{!! Form::date('date_of_birth', null, ['class' => 'form-control']) !!}
+{!! Form::text('date_of_birth', null, ['class' => 'form-control datepicker']) !!}
 </div>
 </div>
 <div class="form-group">
