@@ -120,7 +120,7 @@ class CatController extends Controller
         if(!Auth::user()->canEdit($cat)){
             return redirect()
                 ->route('cat.index')
-                ->withErrors('Permission denied');
+                ->withError('Permission denied');
         }
         return view('cats.edit')->with('cat', $cat);
     }
@@ -137,7 +137,7 @@ class CatController extends Controller
         if(!Auth::user()->canEdit($cat)){
             return redirect()
                 ->route('cat.index')
-                ->withErrors('Permission denied');
+                ->withError('Permission denied');
         }
         $cat->update($request->all());
         return redirect()
