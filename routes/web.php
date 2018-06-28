@@ -27,15 +27,21 @@ Route::get('/', function () {
     return redirect()->route('cat.index');
 });
 
-// Display list cats of breed name
-Route::get('/cats/breeds/{name}', function ($name) {
-    $breed = Furbook\Breed::with('cats')
-        ->where('name', $name)
-        ->first();
-    //dd($breed->cats);
-    return view('cats.index')
-        ->with('breed', $breed)
-        ->with('cats', $breed->cats);
+Route::group(['middleware' => 'auth'], function (){
+    Route::resource('cat', 'CatController');
+
+    // Display list cats of breed name
+    Route::get('/cats/breeds/{name}', function ($name) {
+        $breed = Furbook\Breed::with('cats')
+            ->where('name', $name)
+            ->first();
+        //dd($breed->cats);
+        return view('cats.index')
+            ->with('breed', $breed)
+            ->with('cats', $breed->cats);
+    });
 });
 
-Route::resource('cat', 'CatController');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

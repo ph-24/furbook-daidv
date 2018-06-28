@@ -2,6 +2,7 @@
 
 namespace Furbook;
 
+use Furbook\Cat;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -26,4 +27,40 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected $casts = [
+        'is_admin' => 'boolean'
+    ];
+
+    /**
+     * @return array
+     */
+    public function cats()
+    {
+        return $this->hasMany('Furbook\Cat');
+    }
+
+    /**
+     * @return array
+     */
+    public function owns(Cat $cat)
+    {
+        return $this->id == $cat->id;
+    }
+
+    /**
+     * @return array
+     */
+    public function canEdit(Cat $cat)
+    {
+        return $this->is_admin || $this->owns($cat);
+    }
+
+    /**
+     * @return array
+     */
+    public function isAdministrator()
+    {
+        return $this->getAttribute('is_admin');
+    }
 }

@@ -12,7 +12,7 @@
             </ul>
         </div>
     @endif
-{!! Form::open(['url' => route('cat.store')]) !!}
-@include('partials.forms.cat')
-{!! Form::close() !!}
+    {!! Form::open(['url' => route('cat.store')]) !!}
+    @include('partials.forms.cat')
+    {!! Form::close() !!}
 @stop

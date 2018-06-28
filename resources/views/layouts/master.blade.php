@@ -25,6 +25,11 @@
             {{\Illuminate\Support\Facades\Session::get('success')}}
         </div>
     @endif
+    @if(\Illuminate\Support\Facades\Session::has('errors'))
+        <div class="alert alert-warning">
+            {{\Illuminate\Support\Facades\Session::get('errors')}}
+        </div>
+    @endif
     @yield('content')
 </div>
 </body>
