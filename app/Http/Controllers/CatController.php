@@ -60,7 +60,7 @@ class CatController extends Controller
             ],
             [
                 'required' => 'Cột :attribute là bắt buộc.',
-                'max' => 'Cột :attribute độ dài phải nhỏ hơn :size.',
+                'max' => 'Cột :attribute độ dài phải nhỏ hơn :max kí tự.',
                 'date_format' => 'Cột :attribute định dạng phải là "Y/m/d".',
                 'numeric' => 'Cột :attribute phải là kiểu số.',
             ]
@@ -74,7 +74,7 @@ class CatController extends Controller
 //            ],
 //            [
 //                'required' => 'Cột :attribute là bắt buộc.',
-//                'max' => 'Cột :attribute độ dài phải nhỏ hơn :size.',
+//                'max' => 'Cột :attribute độ dài phải nhỏ hơn :max kí tự.',
 //                'date_format' => 'Cột :attribute định dạng phải là "Y/m/d".',
 //                'numeric' => 'Cột :attribute phải là kiểu số.',
 //            ]
@@ -87,6 +87,11 @@ class CatController extends Controller
 //                ->withErrors($validator)
 //                ->withInput();
 //        }
+
+        // Get user_id
+        $user_id = Auth::user()->id;
+        $request->request->add(['user_id' => $user_id]);
+        //dd($request->all());
 
         // Insert cat
         $cat = Cat::create($request->all());
