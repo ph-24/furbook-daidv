@@ -11,11 +11,5 @@
 @endsection
 
 @section('content')
-    @foreach($cats as $cat)
-        <div class="cat">
-            <a href="{{route('cat.show', $cat->id)}}">
-                <strong>{{$cat->name}} - {{$cat->breed->name}}</strong>
-            </a>
-        </div>
-    @endforeach
+    @include('partials.cat')
 @endsection

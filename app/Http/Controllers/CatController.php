@@ -19,15 +19,24 @@ class CatController extends Controller
     {
         $this->middleware('admin')->only('destroy');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $cats = Cat::all();
+        // Define per page
+        $perPage = 5;
+        $cats = Cat::paginate($perPage);
+
+        // Check request is ajax
+        if ($request->ajax()) {
+            return view('partials.cat')->with('cats', $cats);
+        }
+
+        // Request not ajax
         return view('cats/index')->with('cats', $cats);
     }
 
@@ -122,7 +131,7 @@ class CatController extends Controller
      */
     public function edit(Cat $cat)
     {
-        if(!Auth::user()->canEdit($cat)){
+        if (!Auth::user()->canEdit($cat)) {
             return redirect()
                 ->route('cat.index')
                 ->withError('Permission denied');
@@ -139,7 +148,7 @@ class CatController extends Controller
      */
     public function update(CatRequest $request, Cat $cat)
     {
-        if(!Auth::user()->canEdit($cat)){
+        if (!Auth::user()->canEdit($cat)) {
             return redirect()
                 ->route('cat.index')
                 ->withError('Permission denied');
